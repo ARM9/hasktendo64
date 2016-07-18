@@ -2,8 +2,9 @@
 module N64 where
 
 import qualified Data.ByteString as B
-import           Data.Word
 import qualified VR4300
+
+import           Memory
 
 data N64 = N64
             { cpu :: VR4300.VR4300
@@ -19,4 +20,5 @@ newN64 r = N64
   }
 
 step :: N64 -> N64
-step n64@N64 {cpu} = n64 {cpu = VR4300.exec cpu 0x00431020}
+step n64@N64 {cpu} =
+    n64 {cpu = VR4300.exec cpu 0x00431020}

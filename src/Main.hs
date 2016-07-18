@@ -6,28 +6,12 @@ import           Data.Binary.Strict.Get
 import qualified Data.ByteString        as B
 --import qualified Data.ByteString.Char8  as BC
 import           Control.Monad
-import           Data.Word
 import           System.Environment
 import           System.Exit
 import           Text.Printf
 
+import           Memory
 import qualified N64
-
-readByte :: B.ByteString -> Word8
-readByte mem = either error id g
-    where (g,_) = runGet getWord8 mem
-
-readHword :: B.ByteString -> Word16
-readHword mem = either error id g
-    where (g,_) = runGet getWord16be mem
-
-readWord :: B.ByteString -> Word32
-readWord mem = either error id g
-    where (g,_) = runGet getWord32be mem
-
-readDword :: B.ByteString -> Word64
-readDword mem = either error id g
-    where (g,_) = runGet getWord64be mem
 
 usage :: IO a
 usage = do

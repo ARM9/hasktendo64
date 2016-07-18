@@ -23,7 +23,7 @@ flag debug
 executable hasktendo64
     hs-source-dirs:     src
     main-is:            Main.hs
-    other-modules:      N64 VR4300
+    other-modules:      N64 VR4300 Memory
     if flag(debug)
         ghc-options:    -Wall -O
     else

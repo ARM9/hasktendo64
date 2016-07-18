@@ -7,6 +7,8 @@ import           Data.Int
 import           Data.Word
 import           Text.Printf
 
+import           Memory
+
 type Instruction = Word32
 
 data VR4300 = VR4300
@@ -73,9 +75,12 @@ getGpr cpu n =
         3   -> fromIntegral $ r3 cpu
         _   -> fromIntegral $ r4 cpu
 
+toInt32 :: (Integral a) => a -> Int32
+toInt32 = fromIntegral
+
 add :: VR4300 -> Instruction -> VR4300
 add cpu instr =
-    setGpr cpu rd (fromIntegral (rs + rt) :: Int32)
+    setGpr cpu rd (toInt32 (rs + rt))
     where
         rd = (instr `shiftR` 11) .&. 0x1F
         rt :: Word32 = getGpr cpu $ (instr `shiftR` 16) .&. 0x1F
