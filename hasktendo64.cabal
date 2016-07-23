@@ -22,7 +22,7 @@ cabal-version:      >=1.10
 
 library
     hs-source-dirs:     src
-    exposed-modules:    N64 Memory Mips3 Mips3_64 VR4300
+    exposed-modules:    N64 Memory Mips3 Mips3_64 VR4300 Asm.Mips
     other-modules:
     build-depends:      base >=4.7 && < 5
                       , binary-strict

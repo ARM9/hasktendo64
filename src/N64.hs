@@ -18,7 +18,6 @@ data N64 = N64
 instance Show N64 where
     show N64 {cpu} = show cpu
 
-
 newN64 :: B.ByteString -> N64
 newN64 r = N64
     { cpu = VR4300.new
