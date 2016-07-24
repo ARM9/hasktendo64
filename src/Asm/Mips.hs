@@ -13,7 +13,6 @@ bits n = 1 `shiftL` fromIntegral n - 1
 maskBits :: Word32 -> Word32 -> Word32
 maskBits n x = bits n .&. x
 
--- | Combine op and function field for TODO DIAGRAM opcodes
 opcode :: Word32 -> Word32 -> Word32
 opcode op funct = (op `shiftL` 26) .|. funct
 
@@ -47,11 +46,11 @@ op_2reg_sa :: Word32 -> Word32 -> Word32 -> Word32 -> Word32 -> Word32
 op_2reg_sa op rt rd sa funct =
     opcode op funct .|. fields
     where
-        fields = (rt `shiftL` 16) .|. (rd `shiftL` 11) .|. (sa `shiftL` 6)
+        fields = (rt `shiftL` 16) .|. (rd `shiftL` 11) .|. (maskBits 5 sa `shiftL` 6)
 
 op_2reg_code :: Word32 -> Word32 -> Word32 -> Word32 -> Word32 -> Word32
 op_2reg_code op rs rt code funct =
-    opcode op funct .|. fields .|. (code `shiftL` 6)
+    opcode op funct .|. fields .|. (maskBits 10 code `shiftL` 6)
     where
         fields = (rs `shiftL` 21) .|. (rt `shiftL` 16)
 
@@ -67,18 +66,21 @@ op_1rd :: Word32 -> Word32 -> Word32 -> Word32
 op_1rd op rd funct =
     op_3reg op 0 0 rd funct
 
+copOpcode :: Word32 -> Word32 -> Word32 -> Word32
+copOpcode op cp subop = (op `shiftL` 28) .|. (cp `shiftL` 26) .|. (subop `shiftL` 21)
+
 -- | branch coprocessor Z condition
 op_bcopzc :: Word32 -> Word32 -> Word32 -> Word32 -> Word32 -> Word32
 op_bcopzc op cp subop cond offs =
-    (op `shiftL` 28) .|. (cp `shiftL` 26) .|. (subop `shiftL` 21) .|. (cond `shiftL` 16) .|. ((offs `shiftR` 2) .&. 0xFFFF)
+    copOpcode op cp subop .|. (cond `shiftL` 16) .|. maskBits 16 (offs `shiftR` 2)
 
 op_copz_mov :: Word32 -> Word32 -> Word32 -> Word32 -> Word32 -> Word32
 op_copz_mov op cp subop rt rd =
-    (op `shiftL` 28) .|. (cp `shiftL` 26) .|. (subop `shiftL` 21) .|. (rt `shiftL` 16) .|. (rd `shiftL` 11)
+    copOpcode op cp subop .|. (rt `shiftL` 16) .|. (rd `shiftL` 11)
 
 op_copz :: Word32 -> Word32 -> Word32 -> Word32
 op_copz op cp cofun =
-    (op `shiftL` 28) .|. (cp `shiftL` 26) .|. (1 `shiftL` 25) .|. maskBits 25 cofun
+    copOpcode op cp 0 .|. (1 `shiftL` 25) .|. maskBits 25 cofun
 
 op_jump :: Word32 -> Word32 -> Word32
 op_jump op target = (op `shiftL` 26) .|. maskBits 26 (target `shiftR` 2)

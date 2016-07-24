@@ -2,6 +2,7 @@ import           Control.Monad
 import           Text.Printf
 
 import           Asm.Mips
+import           Assembler.Test
 import qualified VR4300
 
 testVR4300 :: IO ()
@@ -20,6 +21,7 @@ testVR4300 = do
 
 main :: IO ()
 main = do
+    testAssembler
     testVR4300
     putStrLn "\nAll tests passed"
     return ()
