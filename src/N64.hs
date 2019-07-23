@@ -1,9 +1,10 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module N64 where
 
-import qualified Data.ByteString as B
-import qualified Data.Vector     as V
+import qualified Data.ByteString     as B
+import qualified Data.Vector.Unboxed as V
 import           Data.Word
+import Control.Monad.ST.Strict
 
 import           Memory
 import qualified VR4300
@@ -14,6 +15,8 @@ data N64 = N64
             , rom   :: B.ByteString
             --, rsp :: RSP.RSP
             }
+instance ST N64 where
+
 
 instance Show N64 where
     show N64 {cpu} = show cpu

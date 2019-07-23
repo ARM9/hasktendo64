@@ -1,0 +1,16 @@
+
+--init :: N64 -> N64
+--init n64@N64 {rsp} = n64{rsp = }
+    -- some games contain different boot code
+    -- copy 0x40-0x1000 (0xFC0 bytes) to 0xA4000040
+
+    -- cart 0x8 contains boot address offset to copy to from cart 0x1000
+
+    -- cart mapped to 0x10000000
+
+
+
+
+    cpu.step cycles n64State = forM_ [1..cycles] $ runST
+
+    thaw freeze = make copy of entire vector?

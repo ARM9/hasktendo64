@@ -15,22 +15,8 @@ import           Memory
 
 type Instruction = Word32
 
-step :: (Mips3 p) => p -> Instruction -> p
-step cpu instr = let
-    fn = case op instr of
-        0b000000 ->
-            case funct instr of
-                0b100000 -> add
-                0b100001 -> addu
-                0b101100 -> illegal "DADD"
-                0b101101 -> illegal "DADDU"
-                _        -> unimplemented
-        0b001001 -> addiu
-        _        -> unimplemented
-    in fn (incPc cpu) instr
-
 op :: Instruction -> Instruction
-op instr = (instr `shiftR` 26) .&. 0b111111
+op instr = instr `shiftR` 26
 
 funct :: Instruction -> Instruction
 funct = (.&.) 0b111111
@@ -52,6 +38,18 @@ getShamt instr = (instr `shiftR` 6) .&. 0x1F
 
 getTargetAddr :: Instruction -> Address
 getTargetAddr = (`shiftL` 2) . (.&.) 0x3ffffff
+
+step :: (Mips3 p) => p -> Instruction -> p
+step cpu instr = let
+    fn = case op instr of
+        0b000000 ->
+            case funct instr of
+                0b100000 -> add
+                0b100001 -> addu
+                _        -> unimplemented
+        0b001001 -> addiu
+        _        -> unimplemented
+    in fn (incPc cpu) instr
 
 class Mips3 p where
     setGpr :: (Integral a) => p -> Word32 -> a -> p
@@ -77,8 +75,8 @@ class Mips3 p where
             rs = getRs cpu instr
             imm = toWord32 (getImm16 instr :: Int16)
 
-    illegal :: String -> p -> Instruction -> p
-    illegal name _ instr = error $ printf "Illegal instruction %s 0x%08X\n" name instr
+    --illegal :: String -> p -> Instruction -> p
+    --illegal name _ instr = error $ printf "Illegal instruction %s 0x%08X\n" name instr
 
     unimplemented :: p -> Instruction -> p
     unimplemented _ instr =

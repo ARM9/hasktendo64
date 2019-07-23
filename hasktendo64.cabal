@@ -10,11 +10,11 @@ license:            BSD3
 license-file:       LICENSE
 author:             ARM9
 maintainer:         https://github.com/ARM9
-copyright:          (c) 2016 me
+copyright:          (c) 2019 me
 category:           Game
 build-type:         Simple
 extra-source-files: README.md
-cabal-version:      >=1.10
+cabal-version:      >=1.12
 
 -- flag debug
 --     description: Debug build
@@ -27,6 +27,7 @@ library
     build-depends:      base >=4.7 && < 5
                       , binary-strict
                       , bytestring, vector
+                      , primitive
     default-extensions: BangPatterns BinaryLiterals MagicHash OverloadedStrings
                         ScopedTypeVariables
     default-language:   Haskell2010

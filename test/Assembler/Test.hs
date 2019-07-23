@@ -136,7 +136,7 @@ testAssembler = do
             , sd 19 0xffff 29
             , sdc1 19 0xffff 29
             , sdc2 19 0xffff 29
-            , sdc3 19 0xffff 29
+            , sdc3 19 0xffff 29 -- sd on 64-bit
             , sdl 19 0xffff 29
             , sdr 19 0xffff 29
             , sh 19 0xffff 29
