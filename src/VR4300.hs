@@ -4,11 +4,15 @@
 module VR4300 (VR4300(..), Instruction, new, step, run) where
 
 import           Data.Word
+import           Data.Vector.Unboxed
 
-import qualified Mips3
-import           Mips3_64
+import Mips3
 
 data VR4300 = VR4300
+            --{ registers :: Vector
+            -- cop0 :: Cop0
+            -- cop1 :: Cop1
+            --} deriving Show
             { r1  :: Word64, r2  :: Word64, r3  :: Word64, r4  :: Word64
             , r5  :: Word64, r6  :: Word64, r7  :: Word64, r8  :: Word64
             , r9  :: Word64, r10 :: Word64, r11 :: Word64, r12 :: Word64
@@ -37,7 +41,7 @@ new = VR4300
             , pc  = 0x80000400
             }
 
-instance Mips3.Mips3 VR4300 where
+instance Mips3 VR4300 where
     setGpr cpu rd x =
         case rd of
             0   -> cpu
@@ -110,11 +114,14 @@ instance Mips3.Mips3 VR4300 where
             31  -> fromIntegral $ r31 cpu
             _   -> error "Invalid register"
 
+    setPc cpu offset = cpu {pc = pc + offset}
+
     incPc cpu@VR4300 {pc} = cpu {pc = pc + 4}
 
-instance Mips3_64 VR4300 where
+instance Mips3 VR4300 where
 
 -- | Execute a list of instructions
 run :: VR4300 -> [Instruction] -> [VR4300]
 run cpu []      = [cpu]
 run cpu (x:xs)  = cpu : run (step cpu x) xs
+
